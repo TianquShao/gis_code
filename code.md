@@ -82,11 +82,13 @@ legend <- tm_shape(l2019) +
 t=tmap_arrange(tm1,tm,legend,ncol=3)
 t
 ```
-From the picture, we can get the similarities and differences
+
+### analysis:
+From the figures, we can see some similarities and differences
 1. Similarities: agglomeration in the middle - diffusion around.In general, Airbnb listings are strongest in city centres and spread out.In addition, the spread west of the city center is greater
 2. Differences: The color of three Boroughs in 2020 is lighter than previously, namely Tow Hamlets, Hammersmith and Fulham, and Wandsworth. However, the drawback of this graph is that only the interval can be seen, not the travel value. Therefore, we can visualize the spatial distribution by calculating the interpolation of the two data set.
 
-## Change of London Airbnb listing count at borough level
+### Change of London Airbnb listing count at borough level
 
 
 ```{r include=FALSE}
@@ -121,9 +123,12 @@ tmap_mode("plot")
 Merge %>%
   qtm(.,fill = "Change of Airbnb listings count")
 ```
-In order to further explore the spatial variation of the number distribution after the epidemic, the Airbnb listings count for December 2019 and October 2020 were calculated according to Boroughs, and the difference of changes was obtained. As the figure shows, the darker the color, the greater the difference. In general, except for the three areas on the edge of London which showed positive changes, all the other areas showed negative changes, that is, the total number of boroughs decreased.To be specific, we can see that Tower Hamlets is the only one with the deepest color, and the number of houses decreased the most, with a decrease of 1591.The City of Westminster is next, with 1,378 listings down.
+
+### analysis
+  In order to further explore the spatial variation of the number distribution after the epidemic, the Airbnb listings count for December 2019 and October 2020 were calculated according to Boroughs, and the difference of changes was obtained. As the figure shows, the darker the color, the greater the difference. In general, except for the three areas on the edge of London which showed positive changes, all the other areas showed negative changes, that is, the total number of boroughs decreased.To be specific, we can see that Tower Hamlets is the only one with the deepest color, and the number of houses decreased the most, with a decrease of 1591.The City of Westminster is next, with 1,378 listings down.
 
 ## Part II——Spatial Cluster Analysis of Different Room Types
+
 1.KDE Kernel Density Estimation: Determine the spatial clusters of different house types
 we use Kernel Density Estimation to exam the distribution of two main types of Airbnb listings at ward level. The sigma value sets the diameter of the Kernel and we set the sigma as 500m.
 
@@ -171,14 +176,14 @@ e2019.ppp %>%
   density(., sigma=500) %>%
   plot(main="2019entire home/apt  KDE")
 ```
-## 2020entire home/apt  KDE
+### 2020entire home/apt  KDE
 ```{r}
 e2020.ppp %>%
   density(., sigma=500) %>%
   plot(main="2020entire home/apt  KDE")
 ```
 
-## 2019private room  KDE
+### 2019private room  KDE
 ```{r include=FALSE}
 p2019<- read.csv("data/2019-12-09listings.csv") %>%
   st_as_sf(., coords = c("longitude", "latitude"), 
@@ -209,13 +214,14 @@ p2019.ppp <- ppp(x=p2019@coords[,1],
 p2019.ppp %>%
   plot(.,pch=16,cex=0.5, main="2019 private room count")
 ```
+
 ```{r}
 p2019.ppp %>%
   density(., sigma=500) %>%
   plot(main="2019private room  KDE")
 ```
 
-## 2020private room  KDE
+
 ```{r include=FALSE}
 p2020<- read.csv("data/2020-10listings.csv") %>%
   st_as_sf(., coords = c("longitude", "latitude"), 
@@ -246,16 +252,19 @@ p2020.ppp <- ppp(x=p2020@coords[,1],
 p2020.ppp %>%
   plot(.,pch=16,cex=0.5, main="2020 private room count")
 ```
-## 2020private room  KDE
+### 2020private room  KDE
 ```{r}
 p2020.ppp %>%
   density(., sigma=500) %>%
   plot(main="2020private room  KDE")
 ```
-It can be seen from Figures that the two types of house types have a high density in the city center and the north bank of the Thames River, but the geographical location is different.For Private Room, the highest kernel density is concentrated in the area east of central London, which is about the area of Tower Hamlets. However, entire home/ apt has the highest nuclear density in areas north and west of central London.
 
-Since the Kernel Density Map (KDM) could not clearly see the change difference of spatial aggregation between 2019 and 2020, we used spatial autocorrelation for further analysis.
-###2.2 Spatial autocorrelation: analysis of spatial agglomeration changespatial autocorrelation
+### analysis
+  It can be seen from Figures that the two types of house types have a high density in the city center and the north bank of the Thames River, but the geographical location is different.For Private Room, the highest kernel density is concentrated in the area east of central London, which is about the area of Tower Hamlets. However, entire home/ apt has the highest nuclear density in areas north and west of central London.
+  Since the Kernel Density Map (KDM) could not clearly see the change difference of spatial aggregation between 2019 and 2020, we used spatial autocorrelation for further analysis.
+
+### 2.2 Spatial autocorrelation: analysis of spatial agglomeration changespatial autocorrelation
+
 ```{r include=FALSE}
 LondonWards <- st_read('data/statistical-gis-boundaries-london/ESRI/London_Ward.shp')
 WardData <- read.csv("data/ward-profiles-excel-version.csv")
@@ -324,7 +333,7 @@ Lward.lw <- LWard_nb %>%
 
 head(Lward.lw$neighbours)
 ```
-## 2019 entire room/apt  Spatial autocorrelation statistics
+### 2019 entire room/apt  Spatial autocorrelation statistics
 
 ```{r}
 I_LWard_Global_Density <- points_sf_joined %>%
@@ -397,7 +406,9 @@ points_sf_joined <- points_sf_joined %>%
 GIColours<- rev(brewer.pal(8, "RdBu"))
 
 ```
-## Gi*, 2019 Airbnb entire home/apt in London
+
+### Gi*, 2019 Airbnb entire home/apt in London
+
 ```{r}
 tm_shape(points_sf_joined) +
   tm_polygons("density_G",
@@ -409,7 +420,7 @@ tm_shape(points_sf_joined) +
 
 ```
 
-## 2020 entire home/apt spatial autocorrelation tests
+### 2020 entire home/apt spatial autocorrelation tests
 ```{r include=FALSE}
 e2020<- read.csv("data/2020-10listings.csv") %>%
   st_as_sf(., coords = c("longitude", "latitude"), 
@@ -465,6 +476,8 @@ Lward.lw <- LWard_nb %>%
 
 head(Lward.lw$neighbours)
 ```
+
+### 2020 entire room/apt  Spatial autocorrelation statistics
 
 ```{r}
 
@@ -534,6 +547,8 @@ points_sf_joined <- points_sf_joined %>%
 GIColours<- rev(brewer.pal(8, "RdBu"))
 
 ```
+## Gi*, 2020 Airbnb entire home/apt in London
+
 ```{r}
 tm_shape(points_sf_joined) +
   tm_polygons("density_G",
@@ -599,7 +614,9 @@ Lward.lw <- LWard_nb %>%
 
 head(Lward.lw$neighbours)
 ```
-## 2019 private room  Spatial autocorrelation analysis
+
+### 2019 private room  Spatial autocorrelation analysis
+
 ```{r}
 I_LWard_Global_Density <- points_sf_joined %>%
   pull(density) %>%
@@ -668,7 +685,9 @@ points_sf_joined <- points_sf_joined %>%
 GIColours<- rev(brewer.pal(8, "RdBu"))
 
 ```
-## Gi*, 2019 Airbnb private room in London
+
+### Gi*, 2019 Airbnb private room in London
+
 ```{r}
 tm_shape(points_sf_joined) +
   tm_polygons("density_G",
@@ -738,7 +757,8 @@ Lward.lw <- LWard_nb %>%
 
 head(Lward.lw$neighbours)
 ```
-## 2020 private room  Spatial autocorrelation analysis
+
+### 2020 private room  Spatial autocorrelation analysis
 ```{r}
 I_LWard_Global_Density <- points_sf_joined %>%
   pull(density) %>%
@@ -806,7 +826,9 @@ points_sf_joined <- points_sf_joined %>%
 GIColours<- rev(brewer.pal(8, "RdBu"))
 
 ```
-## Gi*, 2019 Airbnb private room in London
+
+### Gi*, 2020 Airbnb private room in London
+
 ```{r}
 tm_shape(points_sf_joined) +
   tm_polygons("density_G",
@@ -818,16 +840,14 @@ tm_shape(points_sf_joined) +
 ```
 
 ## Spatial autocorrelation test results analysis
-All data passed the significance level test. This indicates that the distribution of London Airbnb listings has a significant spatial positive correlation characteristic, that is, it shows a spatial agglomeration distribution.
-In addition, Global Moran's index increases year by year, indicating that the spatial agglomeration of Airbnb distribution is further enhanced, and the change of Geary's also confirms this.
+  All data passed the significance level test. This indicates that the distribution of London Airbnb listings has a significant spatial positive correlation characteristic, that is, it shows a spatial agglomeration distribution.
+  In addition, Global Moran's index increases year by year, indicating that the spatial agglomeration of Airbnb distribution is further enhanced, and the change of Geary's also confirms this.
 
-##  Getis Ord Gi* analysis
+## Getis Ord Gi* analysis
 
-By Getis Ord Gi* We can see the high-value aggregation and low-value aggregation in different periods and compare them. Red represents high-value clusters and blue represents low-value clusters.
-First of all, we can clearly see that there are obvious differences between different types interms of the location of high-value areas and low-value areas. In general, the high value area of Private Room is larger and spreads to some areas south of the Thames River.
-As for Entire home/ apt home type, high value areas are concentrated in Westminster, Camden, Islington, and Hackney. What’ more, the change in the high concentration is very slight, with the range of high values spreading a little bit north along the 2019 boundary.
- As for private rooms mainly concentrated in the north bank of the Thames River, and Tower Hamlets, Hackney, Islington and Camden has a strong spatial correlation, followed by Kensington and Chelsea to the southeast of Hammersmith and Fuiham, and Wandsworth Lambeth Southwark to the north of the south bank. 
-In addition, private rooms mainly concentrated in the north bank of the Thames River, and Tower Hamlets, Hackney, Islington and Camden has a strong spatial correlation, followed by Kensington and Chelsea to the southeast of Hammersmith and Fuiham, and Wandsworth Lambeth Southwark to the north of the south bank. In addition, the range of the low values is going to be larger when we look at the eastern edge, the western edge, and the southeast edge of Greater London.
-
-
+  By Getis Ord Gi* We can see the high-value aggregation and low-value aggregation in different periods and compare them. Red represents high-value clusters and blue represents low-value clusters.
+  First of all, we can clearly see that there are obvious differences between different types interms of the location of high-value areas and low-value areas. In general, the high value area of Private Room is larger and spreads to some areas south of the Thames River.
+  As for Entire home/ apt home type, high value areas are concentrated in Westminster, Camden, Islington, and Hackney. What’ more, the change in the high concentration is very slight, with the range of high values spreading a little bit north along the 2019 boundary.
+  As for private rooms mainly concentrated in the north bank of the Thames River, and Tower Hamlets, Hackney, Islington and Camden has a strong spatial correlation, followed by Kensington and Chelsea to the southeast of Hammersmith and Fuiham, and Wandsworth Lambeth Southwark to the north of the south bank. 
+  In addition, private rooms mainly concentrated in the north bank of the Thames River, and Tower Hamlets, Hackney, Islington and Camden has a strong spatial correlation, followed by Kensington and Chelsea to the southeast of Hammersmith and Fuiham, and Wandsworth Lambeth Southwark to the north of the south bank. In addition, the range of the low values is going to be larger when we look at the eastern edge, the western edge, and the southeast edge of Greater London.
 
